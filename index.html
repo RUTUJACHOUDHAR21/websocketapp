@@ -14,39 +14,68 @@
       height: 100vh;
       margin: 0;
     }
+
     .chat-box {
       background: #222;
       padding: 20px;
       border-radius: 10px;
       width: 400px;
+      display: flex;
+      flex-direction: column;
     }
+
     #messages {
       height: 300px;
       overflow-y: auto;
       border: 1px solid #333;
       padding: 10px;
       margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
     }
+
     input {
       width: 70%;
       padding: 10px;
       border-radius: 5px;
       border: none;
+      outline: none;
     }
+
     button {
       padding: 10px;
       background: #03a9f4;
       color: white;
       border: none;
       border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .my-message {
+      text-align: right;
+      color: #03a9f4;
+    }
+
+    .other-message {
+      text-align: left;
+      color: #ddd;
     }
   </style>
 </head>
 <body>
   <div class="chat-box">
     <div id="messages"></div>
-    <input type="text" id="input" placeholder="Type a message...">
-    <button onclick="sendMessage()">Send</button>
+    <div class="input-row">
+      <input type="text" id="input" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
   </div>
 
   <script>
@@ -58,13 +87,25 @@
     ws.onmessage = (event) => {
       const msg = document.createElement('div');
       msg.textContent = event.data;
+      msg.className = 'other-message';
       messages.appendChild(msg);
       messages.scrollTop = messages.scrollHeight;
     };
 
     function sendMessage() {
       if (input.value.trim() !== '') {
-        ws.send(input.value);
+        const message = input.value;
+
+        // Send to server
+        ws.send(message);
+
+        // Show own message
+        const myMsg = document.createElement('div');
+        myMsg.textContent = 'You: ' + message;
+        myMsg.className = 'my-message';
+        messages.appendChild(myMsg);
+        messages.scrollTop = messages.scrollHeight;
+
         input.value = '';
       }
     }
