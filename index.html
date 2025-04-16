@@ -73,7 +73,8 @@
 
   <script>
     const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-    const ws = new WebSocket(`${protocol}://websocketapp-z4wo.onrender.com/ws`);
+    const ws = new WebSocket(`${protocol}://
+    const ws = new WebSocket("wss://websocketapp-z4wo.onrender.com/ws");
 
     const messages = document.getElementById('messages');
     const input = document.getElementById('input');
