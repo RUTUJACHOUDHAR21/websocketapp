@@ -79,16 +79,13 @@
       const msg = document.createElement('div');
       const messageData = event.data;
       
-      // Check if the message is from the client or the server
+      // Check if the message is from the server
       if (messageData.startsWith(`${serverName}:`)) {
         msg.className = "other-message"; // For server's messages
-      } else {
-        msg.className = "my-message"; // For client's messages
+        msg.textContent = messageData;
+        messages.appendChild(msg);
+        messages.scrollTop = messages.scrollHeight;
       }
-
-      msg.textContent = messageData;  // Set the message content
-      messages.appendChild(msg);
-      messages.scrollTop = messages.scrollHeight;
     };
 
     // Send a message to the WebSocket server
@@ -96,7 +93,7 @@
       if (input.value.trim() !== '') {
         const message = `${clientName}: ` + input.value;
 
-        // Show own message in the chat
+        // Show own message in the chat (client-side only)
         const msg = document.createElement('div');
         msg.textContent = message;
         msg.className = 'my-message';
