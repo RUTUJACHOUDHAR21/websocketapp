@@ -5,11 +5,12 @@
   const messages = document.getElementById('messages');
   const input = document.getElementById('input');
 
+  // Receive messages from WebSocket server
   ws.onmessage = (event) => {
     const msg = document.createElement('div');
     msg.textContent = event.data;
 
-    // Style as "my" or "other" message
+    // Style as "my-message" or "other-message"
     if (event.data.startsWith("You: ")) {
       msg.className = 'my-message';
     } else {
@@ -20,9 +21,17 @@
     messages.scrollTop = messages.scrollHeight;
   };
 
+  // Send message to server
   function sendMessage() {
     if (input.value.trim() !== '') {
       const message = 'You: ' + input.value;
+
+      // Show own message instantly
+      const myMsg = document.createElement('div');
+      myMsg.textContent = message;
+      myMsg.className = 'my-message';
+      messages.appendChild(myMsg);
+      messages.scrollTop = messages.scrollHeight;
 
       // Send to server
       ws.send(message);
