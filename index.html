@@ -1,42 +1,105 @@
-<script>
-  const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-  const ws = new WebSocket(`${protocol}://websocketapp-z4wo.onrender.com/ws`);
-
-  const messages = document.getElementById('messages');
-  const input = document.getElementById('input');
-
-  // Receive messages from WebSocket server
-  ws.onmessage = (event) => {
-    const msg = document.createElement('div');
-    msg.textContent = event.data;
-
-    // Style as "my-message" or "other-message"
-    if (event.data.startsWith("You: ")) {
-      msg.className = 'my-message';
-    } else {
-      msg.className = 'other-message';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Real-Time Chat</title>
+  <style>
+    body {
+      background: #121212;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
+    .chat-box {
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      width: 400px;
+      display: flex;
+      flex-direction: column;
+    }
+    #messages {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #333;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .input-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    input {
+      width: 70%;
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      outline: none;
+    }
+    button {
+      padding: 10px;
+      background: #03a9f4;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .my-message {
+      text-align: right;
+      color: #03a9f4;
+    }
+    .other-message {
+      text-align: left;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <div id="messages"></div>
+    <div class="input-row">
+      <input type="text" id="input" placeholder="Type a message...">
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
 
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-  };
+  <script>
+    const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+    const ws = new WebSocket(`${protocol}://websocketapp-z4wo.onrender.com/ws`);
 
-  // Send message to server
-  function sendMessage() {
-    if (input.value.trim() !== '') {
-      const message = 'You: ' + input.value;
+    const messages = document.getElementById('messages');
+    const input = document.getElementById('input');
 
-      // Show own message instantly
-      const myMsg = document.createElement('div');
-      myMsg.textContent = message;
-      myMsg.className = 'my-message';
-      messages.appendChild(myMsg);
+    ws.onmessage = (event) => {
+      const msg = document.createElement('div');
+      msg.textContent = event.data;
+      msg.className = event.data.startsWith("You: ") ? 'my-message' : 'other-message';
+      messages.appendChild(msg);
       messages.scrollTop = messages.scrollHeight;
+    };
 
-      // Send to server
-      ws.send(message);
+    function sendMessage() {
+      if (input.value.trim() !== '') {
+        const message = 'You: ' + input.value;
 
-      input.value = '';
+        const myMsg = document.createElement('div');
+        myMsg.textContent = message;
+        myMsg.className = 'my-message';
+        messages.appendChild(myMsg);
+        messages.scrollTop = messages.scrollHeight;
+
+        ws.send(message);
+        input.value = '';
+      }
     }
-  }
-</script>
+  </script>
+</body>
+</html>
