@@ -74,7 +74,7 @@
     ws.onmessage = (event) => {
       const msg = document.createElement('div');
       msg.textContent = event.data;
-      msg.className = event.data.startsWith("RUTUJA: ") ? "my-message" : "other-message";
+      msg.className = event.data.startsWith("You: ") ? "my-message" : "other-message";
       messages.appendChild(msg);
       messages.scrollTop = messages.scrollHeight;
     };
@@ -82,7 +82,7 @@
     // Send a message to the WebSocket server
     function sendMessage() {
       if (input.value.trim() !== '') {
-        const message = 'Rutuja: ' + input.value;
+        const message = 'You: ' + input.value;
 
         // Show own message in the chat
         const msg = document.createElement('div');
