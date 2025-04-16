@@ -64,6 +64,10 @@
   </div>
 
   <script>
+    // Set the client name (Rutuja) and the server name (Megha)
+    const clientName = "Rutuja";  // Replace with actual client name
+    const serverName = "Megha";  // Replace with actual server name
+    
     // Connect to your Render WebSocket server
     const ws = new WebSocket("wss://websocketapp-z4wo.onrender.com/ws");
 
@@ -73,8 +77,16 @@
     // Handle incoming WebSocket messages
     ws.onmessage = (event) => {
       const msg = document.createElement('div');
-      msg.textContent = event.data;
-      msg.className = event.data.startsWith("RUTUJA: ") ? "my-message" : "other-message";
+      const messageData = event.data;
+      
+      // Check if the message is from the client or the server
+      if (messageData.startsWith(`${serverName}:`)) {
+        msg.className = "other-message"; // For server's messages
+      } else {
+        msg.className = "my-message"; // For client's messages
+      }
+
+      msg.textContent = messageData;  // Set the message content
       messages.appendChild(msg);
       messages.scrollTop = messages.scrollHeight;
     };
@@ -82,7 +94,7 @@
     // Send a message to the WebSocket server
     function sendMessage() {
       if (input.value.trim() !== '') {
-        const message = 'Rutuja: ' + input.value;
+        const message = `${clientName}: ` + input.value;
 
         // Show own message in the chat
         const msg = document.createElement('div');
@@ -94,7 +106,7 @@
         // Send message to WebSocket server
         ws.send(message);
 
-        input.value = ''; // Clear input
+        input.value = ''; // Clear input field
       }
     }
   </script>
